@@ -1,4 +1,4 @@
-name: Build MailTableExtension
+name: Build Tabulate
 
 on:
   push:
@@ -22,8 +22,8 @@ jobs:
       - name: Build App & Extension (Unsigned)
         run: |
           xcodebuild \
-            -project MailTableExtension.xcodeproj \
-            -scheme MailTableHost \
+            -project Tabulate.xcodeproj \
+            -scheme Tabulate \
             -configuration Release \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="" \
@@ -34,11 +34,11 @@ jobs:
       - name: Package Artifact
         run: |
           mkdir -p dist
-          cp -R build/Build/Products/Release/MailTableHost.app dist/
-          cd dist && zip -r MailTableHost.zip MailTableHost.app
+          cp -R build/Build/Products/Release/Tabulate.app dist/
+          cd dist && zip -r Tabulate.zip Tabulate.app
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MailTableHost-macOS
-          path: dist/MailTableHost.zip
+          name: Tabulate-macOS
+          path: dist/Tabulate.zip

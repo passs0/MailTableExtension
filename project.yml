@@ -1,4 +1,4 @@
-name: MailTableExtension
+name: Tabulate
 options:
   bundleIdPrefix: com.example
   deploymentTarget:
@@ -10,23 +10,22 @@ settings:
     ENABLE_HARDENED_RUNTIME: YES
 
 targets:
-  MailTableHost:
+  Tabulate:
     type: application
     platform: macOS
     sources:
       - path: MailTableHost
-      - path: Shared
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.MailTableHost
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.Tabulate
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: "Mail Table Builder"
+        INFOPLIST_KEY_CFBundleDisplayName: "Tabulate"
         CODE_SIGN_ENTITLEMENTS: MailTableHost/MailTableHost.entitlements
     dependencies:
-      - target: MailTableExtension
+      - target: TabulateExtension
         embed: true
 
-  MailTableExtension:
+  TabulateExtension:
     type: app-extension
     platform: macOS
     sources:
@@ -34,7 +33,7 @@ targets:
       - path: Shared
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.MailTableHost.MailTableExtension
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.Tabulate.TabulateExtension
         INFOPLIST_FILE: MailTableExtension/Info.plist
         CODE_SIGN_ENTITLEMENTS: MailTableExtension/MailTableExtension.entitlements
         LD_RUNPATH_SEARCH_PATHS:

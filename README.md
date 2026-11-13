@@ -1,6 +1,6 @@
-# MailTableExtension
+# Tabulate
 
-A macOS **MailKit** compose extension (`MailTableExtension.appex`) embedded in a lightweight host container (`MailTableHost.app`) that adds an interactive table builder to **Apple Mail's compose toolbar**.
+A minimal macOS **MailKit** compose extension (`TabulateExtension.appex`) embedded in a lightweight host container (`Tabulate.app`) that adds an interactive table builder to **Apple Mail's compose toolbar**.
 
 ## Features
 - **Built-in Row & Column Editing:** Insert Row Above/Below, Delete Row, Insert Column Left/Right, Delete Column, and Clear at the selected cell.
