@@ -1,7 +1,4 @@
 {
-  "features" : [
-    "refractivity"
-  ],
   "fill" : "system-light",
   "groups" : [
     {
@@ -112,11 +109,6 @@
           0,
           0
         ]
-      },
-      "refractivity" : {
-        "depth" : 0.10140624999999986,
-        "enabled" : true,
-        "strength" : 0.310234375
       },
       "shadow" : {
         "kind" : "neutral",
