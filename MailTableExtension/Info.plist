@@ -28,12 +28,17 @@
         <string>$(PRODUCT_MODULE_NAME).ExtensionCoordinator</string>
         <key>NSExtensionAttributes</key>
         <dict>
-            <key>MEComposeSessionIconName</key>
-            <string>table</string>
             <key>MEExtensionCapabilities</key>
             <array>
                 <string>MEComposeSessionHandler</string>
             </array>
+            <key>MEComposeSession</key>
+            <dict>
+                <key>MEComposeIcon</key>
+                <string>table</string>
+                <key>MEComposeIconToolTip</key>
+                <string>Insert Table</string>
+            </dict>
         </dict>
     </dict>
 </dict>

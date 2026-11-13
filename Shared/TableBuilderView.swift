@@ -1,5 +1,4 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// Interactive table editor used inside the MailKit compose popover (and host app).
 struct TableBuilderView: View {
@@ -183,45 +182,12 @@ struct TableBuilderView: View {
                     .font(.caption)
                     .foregroundStyle(.green)
             } else {
-                Text("Click Copy (or drag this badge) into Mail's compose body.")
+                Text("Click Copy (⌘↩), then press ⌘V in Mail.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
             Spacer()
-
-            Label("Drag Table", systemImage: "hand.draw")
-                .font(.caption)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 5)
-                .background(Color.secondary.opacity(0.15))
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                .onDrag {
-                    let html = HTMLTableGenerator.makeHTML(rows: cells, options: options)
-                    let provider = NSItemProvider()
-                    if let htmlData = html.data(using: .utf8),
-                       let attributed = try? NSAttributedString(
-                           data: htmlData,
-                           options: [
-                               .documentType: NSAttributedString.DocumentType.html,
-                               .characterEncoding: String.Encoding.utf8.rawValue
-                           ],
-                           documentAttributes: nil
-                       ),
-                       let rtfData = try? attributed.data(
-                           from: NSRange(location: 0, length: attributed.length),
-                           documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf]
-                       ) {
-                        provider.registerDataRepresentation(
-                            forTypeIdentifier: UTType.rtf.identifier,
-                            visibility: .all
-                        ) { completion in
-                            completion(rtfData, nil)
-                            return nil
-                        }
-                    }
-                    return provider
-                }
 
             Button("Copy Table") {
                 if HTMLTableGenerator.copyToPasteboard(rows: cells, options: options) {

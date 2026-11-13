@@ -6,7 +6,7 @@ A minimal macOS **MailKit** compose extension (`TabulateExtension.appex`) embedd
 - **Built-in Row & Column Editing:** Insert Row Above/Below, Delete Row, Insert Column Left/Right, Delete Column, and Clear at the selected cell.
 - **Formatting Controls:** Toggle header row styling, cell borders, and zebra striping.
 - **CSV / TSV / Markdown Importer:** Paste Markdown pipe tables (`| A | B |`), tab-separated spreadsheet rows, or CSV directly into the grid.
-- **Copy or Drag into Mail:** Copies inline-styled HTML `<table>` (plus RTF and Markdown fallbacks) to `NSPasteboard` for `⌘V`, or drag the **Drag Table** badge directly into the Mail compose body.
+- **Copy into Mail (`⌘↩` → `⌘V`):** Copies inline-styled HTML `<table>` (plus RTF and Markdown fallbacks) to `NSPasteboard` so `⌘V` pastes a clean native table directly into Mail's compose body.
 
 ---
 
