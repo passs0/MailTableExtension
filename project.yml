@@ -15,6 +15,7 @@ targets:
     platform: macOS
     sources:
       - path: MailTableHost
+      - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.MailTableHost
