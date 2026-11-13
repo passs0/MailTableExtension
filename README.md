@@ -27,13 +27,11 @@
 
 ---
 
-## Why can't MailKit insert directly without copy/paste (or drag)?
+## Why can't MailKit insert directly without copy/paste?
 Apple's **MailKit** (`MEComposeSessionHandler`) is intentionally sandboxed:
 - Extensions **cannot** read or mutate the HTML/DOM of the email body being composed. There is no `insertHTML` or `insertTable` API in MailKit.
-- Inside the `.appex` sandbox, the extension also cannot send keyboard/AppleEvents to `Mail.app`.
-- **Two ways around copy/paste:**
-  1. **Drag-and-Drop (included):** Drag the **Drag Table** badge from the popover into Mail's compose area (`NSItemProvider` with `public.html`).
-  2. **Accessibility Auto-Paste (not enabled by default):** A non-sandboxed companion helper could listen for a signal from the extension, dismiss the popover, and synthesize `⌘V` via `CGEvent`—but that requires granting **Privacy & Security → Accessibility** permission on top of code-signing.
+- Inside the `.appex` sandbox, the extension also cannot send keyboard/AppleEvents to `Mail.app` (and out-of-process drag-and-drop into Mail is treated as a file attachment rather than inline rich text).
+- **Accessibility Auto-Paste (not enabled by default):** A non-sandboxed companion helper could listen for a signal from the extension, dismiss the popover, and synthesize `⌘V` via `CGEvent`—but that requires granting **Privacy & Security → Accessibility** permission on top of code-signing.
 
 ---
 
@@ -60,18 +58,18 @@ rm -rf "$TMPDIR"
 ```
 
 ### 2. Download, Sign & Register
-Download `MailTableHost.zip` from the latest GitHub Release, unzip it, and run:
+Download `Tabulate.zip` from the [latest GitHub Release](https://github.com/passs0/Tabulate/releases/latest), unzip it, and run:
 ```bash
-xattr -cr MailTableHost.app
-codesign --force --sign "LocalMailKitDev" --entitlements MailTableExtension/MailTableExtension.entitlements --options runtime MailTableHost.app/Contents/PlugIns/MailTableExtension.appex
-codesign --force --sign "LocalMailKitDev" --entitlements MailTableHost/MailTableHost.entitlements --options runtime MailTableHost.app
-codesign --verify --deep --strict MailTableHost.app
+xattr -cr Tabulate.app
+codesign --force --sign "LocalMailKitDev" --entitlements MailTableExtension/MailTableExtension.entitlements --options runtime Tabulate.app/Contents/PlugIns/TabulateExtension.appex
+codesign --force --sign "LocalMailKitDev" --entitlements MailTableHost/MailTableHost.entitlements --options runtime Tabulate.app
+codesign --verify --deep --strict Tabulate.app
 
-cp -R MailTableHost.app /Applications/MailTableHost.app
-pluginkit -a /Applications/MailTableHost.app/Contents/PlugIns/MailTableExtension.appex
-pluginkit -e use -i com.example.MailTableHost.MailTableExtension
+cp -R Tabulate.app /Applications/Tabulate.app
+pluginkit -a /Applications/Tabulate.app/Contents/PlugIns/TabulateExtension.appex
+pluginkit -e use -i com.example.Tabulate.TabulateExtension
 ```
-Restart **Apple Mail**, verify **MailTableExtension** is enabled in **Mail → Settings → Extensions**, open a new compose window, and click the table icon in the toolbar.
+Restart **Apple Mail**, verify **Tabulate** is enabled in **Mail → Settings → Extensions**, open a new compose window, and click the table icon in the toolbar.
 
 ---
 
@@ -90,10 +88,10 @@ macOS treats Mail extensions as high-privilege components because they run insid
 ---
 
 ## Building from Source (GitHub Actions or Xcode)
-- **GitHub Actions:** Pushing to `main` runs [.github/workflows/build.yml](.github/workflows/build.yml) on `macos-latest`, generates the Xcode project via XcodeGen, builds `MailTableHost.app`, and uploads `MailTableHost-macOS`.
+- **GitHub Actions:** Pushing to `main` runs [.github/workflows/build.yml](.github/workflows/build.yml) on `macos-latest`, generates the Xcode project via XcodeGen, builds `Tabulate.app` (with `TabulateExtension.appex` and `Tabulate.icon`), and uploads `Tabulate-macOS`.
 - **Local Xcode:**
   ```bash
   brew install xcodegen
   xcodegen generate
-  open MailTableExtension.xcodeproj
+  open Tabulate.xcodeproj
   ```
