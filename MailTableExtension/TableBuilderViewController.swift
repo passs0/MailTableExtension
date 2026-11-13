@@ -6,6 +6,6 @@ final class TableBuilderViewController: MEExtensionViewController {
         let hostingView = NSHostingView(rootView: TableBuilderView())
         hostingView.translatesAutoresizingMaskIntoConstraints = false
         self.view = hostingView
-        self.preferredContentSize = NSSize(width: 480, height: 380)
+        self.preferredContentSize = NSSize(width: 520, height: 400)
     }
 }

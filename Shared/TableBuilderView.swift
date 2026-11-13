@@ -1,23 +1,28 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Interactive table editor used inside the MailKit compose popover (and host app).
 struct TableBuilderView: View {
-    @State private var rowCount: Int = 3
-    @State private var colCount: Int = 3
     @State private var cells: [[String]] = [
         ["Header 1", "Header 2", "Header 3"],
         ["Row 1", "Value", "Value"],
         ["Row 2", "Value", "Value"]
     ]
     @State private var options = HTMLTableGenerator.StyleOptions()
+    @State private var selectedRow: Int = 0
+    @State private var selectedCol: Int = 0
     @State private var importText: String = ""
     @State private var showingImporter: Bool = false
     @State private var copiedBanner: Bool = false
 
+    private var rowCount: Int { cells.count }
+    private var colCount: Int { cells.first?.count ?? 0 }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             headerBar
-            controlsBar
+            structureBar
+            styleBar
 
             if showingImporter {
                 importerView
@@ -28,7 +33,7 @@ struct TableBuilderView: View {
             footerBar
         }
         .padding(14)
-        .frame(minWidth: 440, minHeight: 340)
+        .frame(minWidth: 500, minHeight: 380)
     }
 
     private var headerBar: some View {
@@ -43,19 +48,61 @@ struct TableBuilderView: View {
         }
     }
 
-    private var controlsBar: some View {
-        HStack(spacing: 16) {
-            Stepper("Rows: \(rowCount)", value: $rowCount, in: 1...20)
-                .onChange(of: rowCount) { _ in resizeGrid() }
+    private var structureBar: some View {
+        HStack(spacing: 8) {
+            Group {
+                Button { insertRow(at: selectedRow) } label: {
+                    Label("Row Above", systemImage: "arrow.up.to.line")
+                }
+                Button { insertRow(at: selectedRow + 1) } label: {
+                    Label("Row Below", systemImage: "arrow.down.to.line")
+                }
+                Button { deleteRow(at: selectedRow) } label: {
+                    Label("Del Row", systemImage: "minus.circle")
+                }
+                .disabled(rowCount <= 1)
+            }
 
-            Stepper("Cols: \(colCount)", value: $colCount, in: 1...10)
-                .onChange(of: colCount) { _ in resizeGrid() }
+            Divider().frame(height: 16)
 
-            Spacer()
+            Group {
+                Button { insertColumn(at: selectedCol) } label: {
+                    Label("Col Left", systemImage: "arrow.left.to.line")
+                }
+                Button { insertColumn(at: selectedCol + 1) } label: {
+                    Label("Col Right", systemImage: "arrow.right.to.line")
+                }
+                Button { deleteColumn(at: selectedCol) } label: {
+                    Label("Del Col", systemImage: "minus.circle")
+                }
+                .disabled(colCount <= 1)
+            }
+        }
+        .font(.caption)
+        .buttonStyle(.bordered)
+        .controlSize(.small)
+    }
+
+    private var styleBar: some View {
+        HStack(spacing: 14) {
+            Text("\(rowCount) × \(colCount)")
+                .font(.caption.monospacedDigit())
+                .foregroundStyle(.secondary)
 
             Toggle("Header", isOn: $options.hasHeaderRow)
             Toggle("Borders", isOn: $options.showBorders)
             Toggle("Stripes", isOn: $options.zebraStriping)
+
+            Spacer()
+
+            Button("Clear") {
+                cells = Array(
+                    repeating: Array(repeating: "", count: max(colCount, 1)),
+                    count: max(rowCount, 1)
+                )
+            }
+            .font(.caption)
+            .buttonStyle(.borderless)
         }
         .font(.caption)
     }
@@ -73,12 +120,25 @@ struct TableBuilderView: View {
                                     ? .system(size: 12, weight: .semibold)
                                     : .system(size: 12)
                                 )
-                                .frame(minWidth: 90)
+                                .frame(minWidth: 95)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(
+                                            (r == selectedRow && c == selectedCol)
+                                            ? Color.accentColor.opacity(0.6)
+                                            : Color.clear,
+                                            lineWidth: 1.5
+                                        )
+                                )
+                                .onTapGesture {
+                                    selectedRow = r
+                                    selectedCol = c
+                                }
                         }
                     }
                 }
             }
-            .padding(4)
+            .padding(6)
         }
         .background(Color(nsColor: .textBackgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: 6))
@@ -106,8 +166,8 @@ struct TableBuilderView: View {
                     let parsed = HTMLTableGenerator.parseText(importText)
                     if !parsed.isEmpty {
                         cells = parsed
-                        rowCount = parsed.count
-                        colCount = parsed.first?.count ?? 1
+                        selectedRow = 0
+                        selectedCol = 0
                         showingImporter = false
                     }
                 }
@@ -123,12 +183,32 @@ struct TableBuilderView: View {
                     .font(.caption)
                     .foregroundStyle(.green)
             } else {
-                Text("Click Copy, then press ⌘V in the Mail compose body.")
+                Text("Click Copy (or drag this badge) into Mail's compose body.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
             Spacer()
+
+            Label("Drag Table", systemImage: "hand.draw")
+                .font(.caption)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 5)
+                .background(Color.secondary.opacity(0.15))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .onDrag {
+                    let html = HTMLTableGenerator.makeHTML(rows: cells, options: options)
+                    let data = html.data(using: .utf8) ?? Data()
+                    let provider = NSItemProvider()
+                    provider.registerDataRepresentation(
+                        forTypeIdentifier: UTType.html.identifier,
+                        visibility: .all
+                    ) { completion in
+                        completion(data, nil)
+                        return nil
+                    }
+                    return provider
+                }
 
             Button("Copy Table") {
                 if HTMLTableGenerator.copyToPasteboard(rows: cells, options: options) {
@@ -150,26 +230,37 @@ struct TableBuilderView: View {
                 return cells[row][col]
             },
             set: { newValue in
-                resizeGrid()
+                guard row < cells.count, col < cells[row].count else { return }
                 cells[row][col] = newValue
             }
         )
     }
 
-    private func resizeGrid() {
-        while cells.count < rowCount {
-            cells.append(Array(repeating: "", count: colCount))
+    private func insertRow(at index: Int) {
+        let clamped = max(0, min(index, cells.count))
+        cells.insert(Array(repeating: "", count: max(colCount, 1)), at: clamped)
+        selectedRow = clamped
+    }
+
+    private func deleteRow(at index: Int) {
+        guard cells.count > 1, index >= 0, index < cells.count else { return }
+        cells.remove(at: index)
+        selectedRow = min(selectedRow, cells.count - 1)
+    }
+
+    private func insertColumn(at index: Int) {
+        let clamped = max(0, min(index, colCount))
+        for r in cells.indices {
+            cells[r].insert("", at: clamped)
         }
-        if cells.count > rowCount {
-            cells = Array(cells.prefix(rowCount))
+        selectedCol = clamped
+    }
+
+    private func deleteColumn(at index: Int) {
+        guard colCount > 1, index >= 0, index < colCount else { return }
+        for r in cells.indices {
+            cells[r].remove(at: index)
         }
-        for i in cells.indices {
-            while cells[i].count < colCount {
-                cells[i].append("")
-            }
-            if cells[i].count > colCount {
-                cells[i] = Array(cells[i].prefix(colCount))
-            }
-        }
+        selectedCol = min(selectedCol, colCount - 1)
     }
 }
