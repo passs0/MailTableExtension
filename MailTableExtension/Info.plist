@@ -29,7 +29,7 @@
         <key>NSExtensionAttributes</key>
         <dict>
             <key>MEComposeSessionIconName</key>
-            <string>tablecells</string>
+            <string>table</string>
             <key>MEExtensionCapabilities</key>
             <array>
                 <string>MEComposeSessionHandler</string>

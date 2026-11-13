@@ -6,7 +6,7 @@ struct TabulateApp: App {
     var body: some Scene {
         WindowGroup {
             VStack(alignment: .leading, spacing: 10) {
-                Label("Tabulate", systemImage: "tablecells")
+                Label("Tabulate", systemImage: "table")
                     .font(.title2.bold())
                 Text("Enable Tabulate in Mail → Settings → Extensions, then click the table icon in any compose window.")
                     .font(.callout)

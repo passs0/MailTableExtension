@@ -38,7 +38,7 @@ struct TableBuilderView: View {
 
     private var headerBar: some View {
         HStack {
-            Label("Insert Table", systemImage: "tablecells")
+            Label("Insert Table", systemImage: "table")
                 .font(.headline)
             Spacer()
             Button(showingImporter ? "Grid Editor" : "Paste CSV / Markdown") {
@@ -198,16 +198,18 @@ struct TableBuilderView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .onDrag {
                     let html = HTMLTableGenerator.makeHTML(rows: cells, options: options)
-                    let data = html.data(using: .utf8) ?? Data()
-                    let provider = NSItemProvider()
-                    provider.registerDataRepresentation(
-                        forTypeIdentifier: UTType.html.identifier,
-                        visibility: .all
-                    ) { completion in
-                        completion(data, nil)
-                        return nil
+                    if let htmlData = html.data(using: .utf8),
+                       let attributed = try? NSAttributedString(
+                           data: htmlData,
+                           options: [
+                               .documentType: NSAttributedString.DocumentType.html,
+                               .characterEncoding: String.Encoding.utf8.rawValue
+                           ],
+                           documentAttributes: nil
+                       ) {
+                        return NSItemProvider(object: attributed)
                     }
-                    return provider
+                    return NSItemProvider()
                 }
 
             Button("Copy Table") {
