@@ -198,6 +198,7 @@ struct TableBuilderView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .onDrag {
                     let html = HTMLTableGenerator.makeHTML(rows: cells, options: options)
+                    let provider = NSItemProvider()
                     if let htmlData = html.data(using: .utf8),
                        let attributed = try? NSAttributedString(
                            data: htmlData,
@@ -206,10 +207,20 @@ struct TableBuilderView: View {
                                .characterEncoding: String.Encoding.utf8.rawValue
                            ],
                            documentAttributes: nil
+                       ),
+                       let rtfData = try? attributed.data(
+                           from: NSRange(location: 0, length: attributed.length),
+                           documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf]
                        ) {
-                        return NSItemProvider(object: attributed)
+                        provider.registerDataRepresentation(
+                            forTypeIdentifier: UTType.rtf.identifier,
+                            visibility: .all
+                        ) { completion in
+                            completion(rtfData, nil)
+                            return nil
+                        }
                     }
-                    return NSItemProvider()
+                    return provider
                 }
 
             Button("Copy Table") {
