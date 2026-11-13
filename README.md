@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon.png" width="128" alt="Tabulate Icon" />
+</p>
+
 <h1 align="center">Tabulate</h1>
 
 <p align="center">
