@@ -19,6 +19,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.MailTableHost
+        GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: "Mail Table Builder"
         CODE_SIGN_ENTITLEMENTS: MailTableHost/MailTableHost.entitlements
     dependencies:
