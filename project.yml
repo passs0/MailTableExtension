@@ -3,6 +3,9 @@ options:
   bundleIdPrefix: com.example
   deploymentTarget:
     macOS: "13.0"
+  fileTypes:
+    icon:
+      file: true
 settings:
   base:
     SWIFT_VERSION: "5.9"
