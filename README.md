@@ -1,6 +1,23 @@
-# Tabulate
+<h1 align="center">Tabulate</h1>
 
-A minimal macOS **MailKit** compose extension (`TabulateExtension.appex`) embedded in a lightweight host container (`Tabulate.app`) that adds an interactive table builder to **Apple Mail's compose toolbar**.
+<p align="center">
+  <strong>Interactive Table Builder for Apple Mail</strong><br/>
+  A minimal macOS <strong>MailKit</strong> compose extension (<code>TabulateExtension.appex</code>) embedded in a lightweight host container (<code>Tabulate.app</code>) that adds an interactive table builder to <strong>Apple Mail's compose toolbar</strong>.
+</p>
+
+<p align="center">
+  <a href="https://github.com/passs0/Tabulate/releases/latest"><img src="https://img.shields.io/github/v/release/passs0/Tabulate?label=Latest%20Release&color=007AFF" alt="Latest Release" /></a>
+  <img src="https://img.shields.io/badge/macOS-13.0%2B%20%7C%20Apple%20Silicon%20%26%20Intel-black?logo=apple" alt="macOS 13.0+" />
+  <img src="https://img.shields.io/badge/framework-MailKit%20%7C%20SwiftUI%20%7C%20AppKit-blue" alt="Frameworks" />
+</p>
+
+---
+
+> [!NOTE]
+> **AI-Generated Tool Disclosure**
+> **Tabulate** (including its MailKit compose extension architecture, SwiftUI interactive grid editor, and HTML/RTF/Markdown pasteboard export) is an **AI-generated tool** created with **Antigravity** (Google DeepMind).
+
+---
 
 ## Features
 - **Built-in Row & Column Editing:** Insert Row Above/Below, Delete Row, Insert Column Left/Right, Delete Column, and Clear at the selected cell.
