@@ -1,0 +1,44 @@
+name: Build MailTableExtension
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
+      - name: Build App & Extension (Unsigned)
+        run: |
+          xcodebuild \
+            -project MailTableExtension.xcodeproj \
+            -scheme MailTableHost \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package Artifact
+        run: |
+          mkdir -p dist
+          cp -R build/Build/Products/Release/MailTableHost.app dist/
+          cd dist && zip -r MailTableHost.zip MailTableHost.app
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MailTableHost-macOS
+          path: dist/MailTableHost.zip
