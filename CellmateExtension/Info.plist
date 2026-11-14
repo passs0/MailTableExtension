@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>Tabulate</string>
+    <string>Cellmate</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0</string>
+    <string>2.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>NSExtension</key>
@@ -35,9 +35,9 @@
             <key>MEComposeSession</key>
             <dict>
                 <key>MEComposeIcon</key>
-                <string>table</string>
+                <string>tablecells</string>
                 <key>MEComposeIconToolTip</key>
-                <string>Insert Table</string>
+                <string>Cellmate — Insert Table</string>
             </dict>
         </dict>
     </dict>

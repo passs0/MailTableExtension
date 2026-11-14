@@ -1,4 +1,4 @@
-name: Build Tabulate
+name: Build Cellmate
 
 on:
   push:
@@ -22,8 +22,8 @@ jobs:
       - name: Build App & Extension (Unsigned)
         run: |
           xcodebuild \
-            -project Tabulate.xcodeproj \
-            -scheme Tabulate \
+            -project Cellmate.xcodeproj \
+            -scheme Cellmate \
             -configuration Release \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="" \
@@ -34,11 +34,11 @@ jobs:
       - name: Package Artifact
         run: |
           mkdir -p dist
-          cp -R build/Build/Products/Release/Tabulate.app dist/
-          cd dist && zip -r Tabulate.zip Tabulate.app
+          cp -R build/Build/Products/Release/Cellmate.app dist/
+          cd dist && zip -r Cellmate.zip Cellmate.app
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Tabulate-macOS
-          path: dist/Tabulate.zip
+          name: Cellmate-macOS
+          path: dist/Cellmate.zip
